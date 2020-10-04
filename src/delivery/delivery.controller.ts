@@ -1,6 +1,7 @@
 import { Request, Body, Response, Controller, Post, UseGuards, HttpStatus, SetMetadata, Get } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { AssignDto } from './assign.dto';
+import { AddDeliveryDto } from './addDelivery.dto';
 import { DeliveryService } from './delivery.service';
 import { RolesGuard } from '../guards/roles.guard';
 import { debug } from 'console';
@@ -17,8 +18,8 @@ export class DeliveryController {
     @Post('/add')
     @UseGuards(AuthGuard('jwt'), RolesGuard)
     @SetMetadata('roles', ['Sender'])
-    public async create(@Request() {user}, @Body() {packageSize, cost, description}, @Response() res) {
-        const delivery = {packageSize, cost, description, sender: user};
+    public async create(@Request() {user}, @Body() addDelivery: AddDeliveryDto, @Response() res) {
+        const delivery = {...addDelivery, sender: user};
         try{
             await this.deliveryService.create(delivery);
         } catch(err){
