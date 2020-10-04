@@ -44,7 +44,7 @@ export class DeliveryService {
         return await this.deliveryRepository.find();
       }
 
-      public async revenue(courier: Courier, from: string, to: string, page: string): Promise<any>{
+      public async revenue(courier: Courier, from: string, to: string): Promise<any>{
         const { sum } = await this.deliveryRepository
         .createQueryBuilder("delivery")
         .select("SUM(delivery.cost)", "sum")
