@@ -24,7 +24,7 @@ export class DeliveryController {
         } catch(err){
             res.send(err);
         }
-        res.send(delivery);
+        res.send('delivery successfully added');
     }
 
     @Get('/get')
