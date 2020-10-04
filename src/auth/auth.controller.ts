@@ -19,7 +19,7 @@ export class AuthController {
 
   @Post('/')
   public async login(@Response() res, @Body() login: UserDto) {
-    let user = await this.authService.login(<Sender | Courier>login);
+    let user = await this.authService.login(login);
     
     const token = this.authService.signToken(user);
 

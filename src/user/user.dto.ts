@@ -15,4 +15,19 @@ export class UserDto {
     @IsNotEmpty({ message: 'user type is required' })
     @IsEnum(UserType)
     readonly userType: UserType;
+
+    @ApiProperty()
+    companyName: string;
+
+    @ApiProperty()
+    firstName: string;
+
+    @ApiProperty()
+    lastName: string;
+    
+    @ApiProperty()
+    phoneNumber: string;
+    
+    @ApiProperty()
+    vehicleType: string;
 }

@@ -37,7 +37,7 @@ export class AuthService {
     return user;
   }
 
-  async login(login: Sender | Courier): Promise<User> {
+  async login(login: Partial<Sender | Courier>): Promise<User> {
     let user: User;
     user = await this.userService.findOne({where: {email: login.email}});
     if(user && !(await user.checkPassword(login.password))){

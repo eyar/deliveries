@@ -7,7 +7,7 @@ import {User} from '../user/user.entity'
 @ChildEntity()
 export class Sender extends User{
 
-  @Column()
+  @Column({nullable: true})
   companyName: string;
 
   constructor(data: Partial<Sender> = {}) {
