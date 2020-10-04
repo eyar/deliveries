@@ -2,6 +2,8 @@
 
 API is available at https://deliveries-eyar.herokuapp.com
 
+SwaggerUI is at https://deliveries-eyar.herokuapp.com/api
+
 /authenticate
 
 POST /
