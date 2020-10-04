@@ -29,19 +29,13 @@ export class DeliveryController {
 
     @Get('/')
     @UseGuards(AuthGuard('jwt'), RolesGuard)
-    @SetMetadata('roles', ['Sender'])
     public async getSenderDeliveries(@Request() {user, query:{page, date}}, @Response() res) {
         page = page > 0 ? page-1 : 0;
-        const deliveries = await this.deliveryService.find({where:{sender: user, date: MoreThan(date.split('T')[0])}, skip: page*take, take});
-        res.json(deliveries);
-    }
-
-    @Get('/')
-    @UseGuards(AuthGuard('jwt'), RolesGuard)
-    @SetMetadata('roles', ['Courier'])
-    public async getCourierDeliveries(@Request() {user, query:{page, date}}, @Response() res) {
-        page = page > 0 ? page-1 : 0;
-        const deliveries = await this.deliveryService.find({where:{sender: user, date: MoreThan(date.split('T')[0])}, skip: page*take, take});
+        const id = {}; 
+        id[user.userType.toLowerCase()] = user;
+        date = date ? {date: MoreThan(date.split('T')[0])} : {};
+        const skip = page ? {skip: page*take} : {};
+        const deliveries = await this.deliveryService.find({where:{...id, ...date }, ...skip, take});
         res.json(deliveries);
     }
 
