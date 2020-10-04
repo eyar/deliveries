@@ -22,12 +22,9 @@ export class AuthController {
     let user = await this.authService.login(<Sender | Courier>login);
     
     const token = this.authService.signToken(user);
-    res.cookie('token', token, {
-      httpOnly: true
-    });
 
     res.setHeader('Authorization', `Bearer ${token}`);
-    return res.status(HttpStatus.OK).send(token);
+    return res.status(HttpStatus.OK).json({token});
   }
 }
   

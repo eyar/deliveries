@@ -1,10 +1,10 @@
 import { Request, Body, Response, Controller, Post, UseGuards, HttpStatus, SetMetadata, Get } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { User, UserType } from '../user/user.entity';
+import { AssignDto } from './assign.dto';
 import { DeliveryService } from './delivery.service';
 import { RolesGuard } from '../guards/roles.guard';
 import { debug } from 'console';
-import { MoreThan, Between } from 'typeorm';
+import { MoreThan } from 'typeorm';
 const take = 5;
 
 @Controller('delivery')
@@ -14,7 +14,7 @@ export class DeliveryController {
         private readonly deliveryService: DeliveryService,
     ) {}
     
-    @Post('/')
+    @Post('/add')
     @UseGuards(AuthGuard('jwt'), RolesGuard)
     @SetMetadata('roles', ['Sender'])
     public async create(@Request() {user}, @Body() {packageSize, cost, description}, @Response() res) {
@@ -27,7 +27,7 @@ export class DeliveryController {
         res.send(delivery);
     }
 
-    @Get('/')
+    @Get('/get')
     @UseGuards(AuthGuard('jwt'), RolesGuard)
     public async getSenderDeliveries(@Request() {user, query:{page, date}}, @Response() res) {
         page = page > 0 ? page-1 : 0;
@@ -42,7 +42,8 @@ export class DeliveryController {
     @Post('/assign')
     @UseGuards(AuthGuard('jwt'), RolesGuard)
     @SetMetadata('roles', ['Sender'])
-    public async assign(@Request() {user}, @Body() {deliveryId, courierId}, @Response() res){
+    public async assign(@Request() {user}, @Body() assign: AssignDto, @Response() res){
+        const {deliveryId, courierId} = assign;
         const affected = await this.deliveryService.assign(user, deliveryId, courierId);
         const respone = affected ? 'delivery successfully assigned' : 'delivery assign failed';
         res.json(respone);
@@ -52,7 +53,9 @@ export class DeliveryController {
     @UseGuards(AuthGuard('jwt'), RolesGuard)
     @SetMetadata('roles', ['Courier'])
     public async revenue(@Request() {user, query:{from, to}}, @Response() res){
-        if(from > to || new Date().toISOString() < to) res.status(HttpStatus.BAD_REQUEST).send('bad date range');
+        to = to ? to : new Date().toISOString();
+        from = from ? from : new Date(0);
+        if(from && from > to || new Date().toISOString() < to) res.status(HttpStatus.BAD_REQUEST).send('bad date range');
         const sum = await this.deliveryService.revenue(user, from, to);
         res.send(sum);
     }

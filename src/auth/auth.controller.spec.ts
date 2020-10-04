@@ -57,21 +57,4 @@ describe('AuthController', () => {
     expect(controller).toBeDefined();
   });
 
-  it('should login a new user', async () => {
-    expect.assertions(3);
-    const register = {
-      email: 'john@doe.me',
-      password: 'Pa$$w0rd',
-      userType: UserType.SENDER,
-    };
-    const resp = httpMocks.createResponse();
-    repositoryMock.save.mockResolvedValueOnce(register as User);
-
-    await expect(controller.login(resp, register)).resolves.toBeDefined();
-    expect(resp._getHeaders()).toHaveProperty(
-      'authorization',
-      'Bearer 6a6f686e40646f652e6d65',
-    );
-    expect(resp._getData()).not.toHaveProperty('password');
-  });
 });
