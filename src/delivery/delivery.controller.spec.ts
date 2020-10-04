@@ -4,7 +4,7 @@ import { mock } from 'jest-mock-extended';
 import { Repository } from 'typeorm';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { DeliveryController } from './delivery.controller';
-import { Delivery } from './Delivery.entity';
+import { Delivery } from './delivery.entity';
 import { Sender } from '../user/sender.entity';
 import { Courier } from '../user/courier.entity';
 import { UserService } from '../user/user.service';

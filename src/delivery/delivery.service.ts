@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, FindOneOptions, FindManyOptions, UpdateResult } from 'typeorm';
-import { Delivery } from './Delivery.entity';
+import { Repository, FindOneOptions, FindManyOptions } from 'typeorm';
+import { Delivery } from './delivery.entity';
 import { Courier } from '../user/courier.entity';
 import { debug } from 'console';
 
