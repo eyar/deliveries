@@ -18,13 +18,13 @@ export class AuthController {
   ) {}
 
   @Post('/')
-  public async login(@Response() res, @Body() login: UserDto) {
+  public async login(@Response() res, @Body() login: Partial<UserDto>) {
     let user = await this.authService.login(login);
     
     const token = this.authService.signToken(user);
 
     res.setHeader('Authorization', `Bearer ${token}`);
-    return res.status(HttpStatus.OK).json({token});
+    return res.status(HttpStatus.OK).send({token});
   }
 }
   

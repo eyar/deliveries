@@ -13,7 +13,7 @@ export class UserDto {
 
     @ApiProperty()
     @IsNotEmpty({ message: 'user type is required' })
-    @IsEnum(UserType)
+    @IsEnum(UserType, {message: 'type can only be  COURIER or SENDER'})
     readonly userType: UserType;
 
     @ApiProperty()

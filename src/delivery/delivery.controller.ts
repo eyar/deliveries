@@ -1,11 +1,12 @@
 import { Request, Body, Response, Controller, Post, UseGuards, HttpStatus, SetMetadata, Get } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
+import { MoreThan } from 'typeorm';
+import moment from 'moment';
 import { AssignDto } from './assign.dto';
 import { AddDeliveryDto } from './addDelivery.dto';
 import { DeliveryService } from './delivery.service';
 import { RolesGuard } from '../guards/roles.guard';
 import { debug } from 'console';
-import { MoreThan } from 'typeorm';
 const take = 5;
 
 @Controller('delivery')
@@ -54,6 +55,8 @@ export class DeliveryController {
     @UseGuards(AuthGuard('jwt'), RolesGuard)
     @SetMetadata('roles', ['Courier'])
     public async revenue(@Request() {user, query:{from, to}}, @Response() res){
+        if(to && !moment(to, moment.ISO_8601, true).isValid() || 
+        from && !moment(from, moment.ISO_8601, true).isValid() ) res.status(HttpStatus.BAD_REQUEST).send('bad date range');
         to = to ? to : new Date().toISOString();
         from = from ? from : new Date(0);
         if(from && from > to || new Date().toISOString() < to) res.status(HttpStatus.BAD_REQUEST).send('bad date range');

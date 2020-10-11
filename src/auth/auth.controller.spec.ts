@@ -1,3 +1,4 @@
+import { build, fake, perBuild, sequence } from '@jackfranklin/test-data-bot';
 import { Test, TestingModule } from '@nestjs/testing';
 import { mock } from 'jest-mock-extended';
 import { Repository } from 'typeorm';
@@ -11,6 +12,15 @@ import { debug } from 'console';
 import {UserType} from '../user/user.entity';
 import { Sender } from '../user/sender.entity';
 import { Courier } from '../user/courier.entity';
+
+const userBuilder = build<Partial<User>>({
+  fields: {
+    email: fake(f => f.internet.exampleEmail()),
+    password: fake(f => f.internet.password()),
+    userType: UserType.COURIER,
+  },
+  postBuild: u => new User(u),
+});
 
 describe('AuthController', () => {
   let controller: AuthController;
@@ -55,6 +65,25 @@ describe('AuthController', () => {
 
   it('should be defined', () => {
     expect(controller).toBeDefined();
+  });
+
+  it('should register a new user', async () => {
+    expect.assertions(3);
+    const register = {
+      email: 'john@doe.me',
+      password: 'Pa$$w0rd',
+      userType: UserType.COURIER
+    };
+    const resp = httpMocks.createResponse();
+    repositoryMock.save.mockResolvedValueOnce(
+      userBuilder({ overrides: register }) as User,
+    );
+
+    await expect(controller.login(resp, register)).resolves.toBeDefined();
+    expect(resp._getData()).toHaveProperty(
+      'token',
+      '6a6f686e40646f652e6d65',
+    );
   });
 
 });
