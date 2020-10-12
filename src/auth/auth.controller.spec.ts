@@ -68,18 +68,34 @@ describe('AuthController', () => {
   });
 
   it('should register a new user', async () => {
-    expect.assertions(3);
+    expect.assertions(2);
     const register = {
       email: 'john@doe.me',
       password: 'Pa$$w0rd',
       userType: UserType.COURIER
     };
     const resp = httpMocks.createResponse();
-    repositoryMock.save.mockResolvedValueOnce(
+    repositoryMock.save.mockResolvedValue(
       userBuilder({ overrides: register }) as User,
     );
 
     await expect(controller.login(resp, register)).resolves.toBeDefined();
+    expect(resp._getData()).toHaveProperty(
+      'token',
+      '6a6f686e40646f652e6d65',
+    );
+  });
+
+  it('should log in an user', async () => {
+    expect.assertions(2);
+    const resp = httpMocks.createResponse();
+    const login = {
+        email: 'john@doe.me',
+        password: 'Pa$$w0rd',
+        userType: UserType.COURIER
+      };
+    
+      await expect(controller.login(resp, login as User)).resolves.toBeDefined();
     expect(resp._getData()).toHaveProperty(
       'token',
       '6a6f686e40646f652e6d65',
